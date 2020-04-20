@@ -16,7 +16,7 @@
           {{seller.description}}/{{seller.deliveryTime}}分钟送达
         </div>
         <div v-if="seller.supports" class="support">
-          <span class="icon" :class="classMap[seller.supports[0].type]"></span>
+          <span class="icon" :class="classMap[seller.supports[0].type]"></span>\
           <span class="text">{{seller.supports[0].description}}</span>
         </div>
       </div>
@@ -28,8 +28,8 @@
     </div>
     <!-- 下方公告区 -->
     <div class="bulletin-wrapper">
-      <span class="bulletin-title"></span>
-      <span class="bulletin-text">{{seller.bulletin}}</span>
+      <span class="bulletin-title"></span><span
+      class="bulletin-text">{{seller.bulletin}}</span>
       <i class="icon-keyboard_arrow_right"></i>
     </div>
   </div>
@@ -132,11 +132,14 @@
       text-overflow ellipsis
       .bulletin-title
         display inline-block
+        vertical-align top
         width 22px
         height 12px
         bg-image('bulletin')
         background-size 22px
         background-repeat no-repeat
       .bulletin-text
+        vertical-align top
+        margin 0 4px
         font-size 10px
 </style>
