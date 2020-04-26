@@ -36,12 +36,22 @@
       <img :src="seller.avatar" width="100%" height="100%">
     </div>
     <div v-show="detailShow" class="detail">
-
+      <div class="detail-wrapper clearfix">
+        <div class="detail-main">
+          <h1 class="name">{{seller.name}}</h1>
+          <star :size="48" :score="seller.score"></star>
+        </div>
+      </div>
+      <div class="detail-close">
+        <i class="icon-close"></i>
+      </div>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  import star from 'components/star/star';
+
   export default {
     props: {
       seller: {
@@ -61,6 +71,9 @@
     created() {
       this.classMap = ['decrease', 'discount', 'guarantee',
       'invoice', 'special'];
+    },
+    components: {
+      'star': star
     }
   };
 </script>
@@ -91,7 +104,7 @@
             vertical-align top
             width 30px
             height 18px
-            bg-image('brand')
+            bg-image('./imgs/brand')
             background-size 30px 18px
             background-repeat no-repeat
           .name
@@ -113,15 +126,15 @@
             background-size 12px 12px
             background-repeat no-repeat
             &.decrease
-              bg-image('decrease_1')
+              bg-image('./imgs/decrease_1')
             &.discount
-              bg-img('discount_1')
+              bg-img('./imgs/discount_1')
             &.guarantee
-              bg-image('guarantee_1')
+              bg-image('./imgs/guarantee_1')
             &.invoice
-              bg-image('invoice_1')
+              bg-image('./imgs/invoice_1')
             &.special
-              bg-image('special_1')
+              bg-image('./imgs/special_1')
           .text
             line-height 12px
             font-size 10px
@@ -156,7 +169,7 @@
         margin-top 8px
         width 22px
         height 12px
-        bg-image('bulletin')
+        bg-image('./imgs/bulletin')
         background-size 22px 12px
         background-repeat no-repeat
       .bulletin-text
@@ -185,4 +198,22 @@
       height 100%
       overflow auto
       background rgba(7, 17, 27, 0.8)
+      .detail-wrapper
+        width 100%
+        min-height 100%
+        .detail-main
+          margin-top 64px
+          padding-bottom 64px
+          .name
+            line-height 16px
+            text-align center
+            font-size 16px
+            font-weight 700
+      .detail-close
+        position relative
+        width 32px
+        height 32px
+        margin -64px auto 0 auto
+        clear both
+        font-size 32px
 </style>
