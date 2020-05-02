@@ -29,19 +29,23 @@
                 <div class="price">
                   <span class="now">￥{{food.price}}</span><span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
                 </div>
+                <div class="cartcontrol-warpper">
+                  <cartcontrol :food="food"></cartcontrol>
+                </div>
               </div>
             </li>
           </ul>
         </li>
       </ul>
     </div>
-    <shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
+    <shopcart v-ref:shopcart :select-foods="selectFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import BScroll from 'better-scroll';
   import shopcart from 'components/shopcart/shopcart';
+  import cartcontrol from 'components/cartcontrol/cartcontrol';
 
   const ERR_OK = 0;
 
@@ -68,6 +72,18 @@
           }
         }
         return 0;
+      },
+      selectFoods() {
+        let foods = [];
+        // 遍历所有分类下的所有被选择的商品
+        this.goods.forEach((good) => {
+          good.foods.forEach((food) => {
+            if (food.count) {
+              foods.push(food);
+            }
+          });
+        });
+        return foods;
       }
     },
     created() {
@@ -96,7 +112,6 @@
         // 对应的商品列表的高度
         let el = foodList[index];
         this.foodsScroll.scrollToElement(el, 300);
-        console.log(index);
       },
       // 初始化滑动窗口
       _initScroll() {
@@ -105,7 +120,8 @@
         });
 
         this.foodsScroll = new BScroll(this.$els.foodsWrapper, {
-          probeType: 3
+          click: true,  // 滚动框架不拦截点击事件
+          probeType: 3  // probeType为3，将在屏幕滑动的过程中和momentum滚动动画运行过程中实时派发scroll事件
         });
 
         // 实时获取滚动的距离
@@ -124,10 +140,21 @@
           height += item.clientHeight;
           this.listHeight.push(height);
         }
+      },
+      _drop(target) {
+        this.$refs.shopcart.drop(target);
       }
     },
     components: {
-      shopcart
+      shopcart,
+      cartcontrol
+    },
+    // 监听事件（包括子组件发射的事件）
+    events: {
+      // 监听子组组件cartcontrol的cart.add事件
+      'cart.add'(target) {
+        this._drop(target);
+      }
     }
   };
 </script>
@@ -233,6 +260,8 @@
               text-decoration 10px
               font-size 10px
               color rgb(147, 153, 159)
-
-
+          .cartcontrol-warpper
+            position absolute
+            right 0
+            bottom 12px
 </style>
