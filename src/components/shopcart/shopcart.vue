@@ -20,7 +20,7 @@
       </div>
     </div>
     <div class="ball-container">
-      <div transition="drop" v-for="ball in balls" v-if="ball.show" class="ball">
+      <div transition="drop" v-for="ball in balls" v-show="ball.show" class="ball">
          <div class="inner inner-hook"></div>
       </div>
     </div>
@@ -100,7 +100,6 @@
     methods: {
       // 实现小球下落动画
       drop(el) {
-        console.log(el);
         for (let i = 0; i < this.balls.length; i++) {
           let ball = this.balls[i];
           if (!ball.show) {
@@ -112,9 +111,10 @@
         }
       }
     },
-    transition: {
+    transitions: {
       drop: {
         beforeEnter(el) {
+          // beforeEnter中循环所有为true的小球做动画
           let count = this.balls.length;
           while (count--) {
             let ball = this.balls[count];
@@ -127,14 +127,15 @@
               el.style.webkitTransform = `translate3d(0, ${y}px, 0)`;
               el.style.transform = `translate3d(0, ${y}px, 0)`;
               let inner = el.getElementsByClassName('inner-hook')[0];
-              inner.style.webkitTransform = `translate3d(0, ${x}px, 0, 0)`;
-              inner.style.transform = `translate3d(0, ${x}px, 0, 0)`;
+              inner.style.webkitTransform = `translate3d(${x}px, 0, 0)`;
+              inner.style.transform = `translate3d(${x}px, 0, 0)`;
             }
           }
         },
         enter(el) {
+          // 动画完成时的方法
           /* eslint-disable no-unused-vars */
-          let rf = el.offestHeight;
+          let rf = el.offsetHeight; // dom重绘
           this.$nextTick(() => {
             el.style.webkitTransform = 'translate3d(0, 0, 0)';
             el.style.transform = 'translate3d(0, 0, 0)';
@@ -144,7 +145,7 @@
           });
         },
         afterEnter(el) {
-          let ball = this.dropBalls.shift();
+          let ball = this.dropBalls.shift();  // shift删除第一个元素，并返回
           if (ball) {
             ball.show = false;
             el.style.display = 'none';
@@ -251,11 +252,11 @@
         bottom 22px
         z-index 200
         &.drop-transition
-          transform all 0.4s
+          transition all 0.4s cubic-bezier(0.49, -0.29, 0.75, 0.41)
           .inner
             width 16px
             height 16px
             border-radius 50%
             background rgb(0, 160, 220)
-            transition all 0.4s
+            transition all 0.4s  linear
 </style>

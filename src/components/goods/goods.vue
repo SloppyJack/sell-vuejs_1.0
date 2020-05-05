@@ -142,7 +142,10 @@
         }
       },
       _drop(target) {
-        this.$refs.shopcart.drop(target);
+        // 体验优化，等待dom更新完成后，再触发子组件的drop方法
+        this.$nextTick(() => {
+          this.$refs.shopcart.drop(target);
+        });
       }
     },
     components: {
