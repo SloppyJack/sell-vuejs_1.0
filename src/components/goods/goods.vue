@@ -16,7 +16,7 @@
         <li v-for="item in goods" class="food-list food-list-hook">
           <h1 class="title">{{item.name}}</h1>
           <ul>
-            <li v-for="food in item.foods" class="food-item border-1px">
+            <li @click="selectFood(food,$event)" v-for="food in item.foods" class="food-item border-1px">
               <div class="icon">
                 <img width="57" height="57"  :src="food.icon">
               </div>
@@ -27,7 +27,8 @@
                   <span class="count">月售{{food.sellCount}}份</span><span>好评率{{food.rating}}%</span>
                 </div>
                 <div class="price">
-                  <span class="now">￥{{food.price}}</span><span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
+                  <span class="now">￥{{food.price}}</span><span
+                  class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
                 </div>
                 <div class="cartcontrol-warpper">
                   <cartcontrol :food="food"></cartcontrol>
@@ -39,6 +40,7 @@
       </ul>
     </div>
     <shopcart v-ref:shopcart :select-foods="selectFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
+    <food :food="selectedFood" v-ref:food></food>
   </div>
 </template>
 
@@ -46,6 +48,7 @@
   import BScroll from 'better-scroll';
   import shopcart from 'components/shopcart/shopcart';
   import cartcontrol from 'components/cartcontrol/cartcontrol';
+  import food from 'components/food/food';
 
   const ERR_OK = 0;
 
@@ -59,7 +62,8 @@
       return {
         goods: [],  // 商品列表
         listHeight: [],  // 每个区域的高度
-        scrollY: 0
+        scrollY: 0,
+        selectedFood: {}
       };
     },
     computed: {
@@ -141,6 +145,14 @@
           this.listHeight.push(height);
         }
       },
+      selectFood(food, event) {
+        // 如果为浏览器原生点击事件,则直接返回
+        if (!event._constructed) {
+          return;
+        }
+        this.selectedFood = food;
+        this.$refs.food.show();
+      },
       _drop(target) {
         // 体验优化，等待dom更新完成后，再触发子组件的drop方法
         this.$nextTick(() => {
@@ -150,7 +162,8 @@
     },
     components: {
       shopcart,
-      cartcontrol
+      cartcontrol,
+      food
     },
     // 监听事件（包括子组件发射的事件）
     events: {
