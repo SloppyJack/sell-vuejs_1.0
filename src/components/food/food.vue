@@ -59,7 +59,7 @@
 <script type="text/ecmascript-6">
   import BScroll from 'better-scroll';
   import Vue from 'vue';
-  import {formateDate} from 'common/js/date';
+  import {formatDate} from 'common/js/date';
   import cartcontrol from 'components/cartcontrol/cartcontrol';
   import split from 'components/split/split';
   import ratingselect from 'components/ratingselect/ratingselect';
@@ -144,7 +144,7 @@
     filters: {
       formatDate(time) {
         let date = new Date(time);
-        return formateDate(date, 'yyyy-MM-dd hh:mm');
+        return formatDate(date, 'yyyy-MM-dd hh:mm');
       }
     },
     components: {

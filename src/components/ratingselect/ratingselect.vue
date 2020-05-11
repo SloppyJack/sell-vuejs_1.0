@@ -41,7 +41,7 @@
         default() {
           return {
             all: '全部',
-            positive: '不满意',
+            positive: '满意',
             negative: '不满意'
           };
         }

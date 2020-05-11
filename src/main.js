@@ -32,4 +32,4 @@ router.map({
 router.start(app, '#app');
 
 // 默认路由
-router.go('/goods');
+// router.go('/goods');
