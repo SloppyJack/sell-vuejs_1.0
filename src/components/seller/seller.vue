@@ -28,6 +28,10 @@
             </div>
           </li>
         </ul>
+        <div class="favorite">
+          <span class="icon-favorite" :class="{'active':favorite}"></span>
+          <span class="text">{{favoriteText}}</span>
+        </div>
       </div>
       <split></split>
       <div class="bulletin">
@@ -74,6 +78,17 @@
       seller: {
         type: Object
       }
+    },
+    data() {
+      return {
+        favorite: false
+      };
+    },
+    computed: {
+      favoriteText() {
+        return this.favorite ? '已收藏' : '未收藏';
+      }
+
     },
     created() {
       this.classMap = ['decrease', 'discount', 'guarantee',
@@ -141,6 +156,7 @@
     width 100%
     overflow hidden
     .overview
+      position relative
       padding 18px
       .title
         margin-bottom 8px
@@ -182,6 +198,14 @@
             color rgb(7, 17, 27)
             .stress
               font-size 24px
+      .favorite
+        position absolute
+        right 18px
+        top 18px
+        text-align center
+        .icon-favorite
+          display block
+
     .bulletin
       padding 18px 18px 0 18px
       .title
