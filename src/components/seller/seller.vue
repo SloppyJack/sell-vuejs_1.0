@@ -28,7 +28,7 @@
             </div>
           </li>
         </ul>
-        <div class="favorite">
+        <div class="favorite" @click="toggleFavorite">
           <span class="icon-favorite" :class="{'active':favorite}"></span>
           <span class="text">{{favoriteText}}</span>
         </div>
@@ -136,6 +136,12 @@
             }
           });
         }
+      },
+      toggleFavorite(event) {
+        if (!event._constructed) {
+          return;
+        }
+        this.favorite = !this.favorite;
       }
     },
     components: {
@@ -200,12 +206,22 @@
               font-size 24px
       .favorite
         position absolute
-        right 18px
+        width 50px
+        right 11px
         top 18px
         text-align center
         .icon-favorite
           display block
-
+          margin-bottom 4px
+          line-height 24px
+          font-size 24px
+          color #d4d6d9
+          &.active
+            color rgb(240, 20, 20)
+        .text
+          line-height 10px
+          font-size 10px
+          color rgb(77, 85, 93)
     .bulletin
       padding 18px 18px 0 18px
       .title
