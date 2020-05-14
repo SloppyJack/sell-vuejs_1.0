@@ -12,7 +12,7 @@
         <a v-link="{path:'/seller'}">商家</a>
       </div>
     </div>
-    <router-view :seller="seller">
+    <router-view :seller="seller" keep-alive>
 
     </router-view>
   </div>
@@ -39,8 +39,8 @@
       this.$http.get('/api/seller?id=' + this.seller.id).then((response) => {
         response = response.body;
         if (response.errno === ERR_OK) {
-          this.seller = response.data;
-          this.seller =
+          //  Object.assign方法用于将所有可枚举属性的值从一个或多个源对象复制到目标对象
+          this.seller = Object.assign({}, this.seller, response.data);
         }
       });
     },
