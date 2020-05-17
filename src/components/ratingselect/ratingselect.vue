@@ -65,18 +65,16 @@
         if (!event._constructed) {
           return;
         }
-        this.selectType = type;
         // 子组件向父组件派发事件
-        this.$dispatch('ratingtype.select', type);
+        this.$emit('select', type);
       },
       toggleContent(event) {
         // 如果为浏览器原生点击事件,则直接返回
         if (!event._constructed) {
           return;
         }
-        this.onlyContent = !this.onlyContent;
         // 子组件向父组件派发事件
-        this.$dispatch('content.toggle', this.onlyContent);
+        this.$emit('toggle', this.onlyContent);
       }
     }
   };

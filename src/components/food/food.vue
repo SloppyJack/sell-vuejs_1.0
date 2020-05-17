@@ -1,5 +1,5 @@
-<template xmlns:v-el="http://www.w3.org/1999/xhtml">
-  <div v-show="showFlag" class="food" transition="move" v-el:food>
+<template>
+  <div v-show="showFlag" class="food" transition="move" ref="food">
     <div class="food-content">
       <div class="img-header">
         <img :src="food.image">
@@ -18,7 +18,7 @@
           class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
         </div>
         <div class="cartcontrol-wrapper">
-          <cartcontrol :food="food"></cartcontrol>
+          <cartcontrol @add="" :food="food"></cartcontrol>
         </div>
         <div @click.stop.prevent="addFirst" class="buy" v-show="!food.count || food.count===0"
              transition="fade">加入购物车</div>
@@ -31,7 +31,7 @@
       <split></split>
       <div class="rating">
         <h1 class="title">商品评价</h1>
-        <ratingselect :select-type="selectType"
+        <ratingselect @select="selectRating" @toggle="toggleContent" :select-type="selectType"
         :only-content="onlyContent" :desc="desc" :ratings="food.ratings"></ratingselect>
         <div class="rating-wrapper">
           <ul v-show="food.ratings && food.ratings.length">
@@ -91,7 +91,7 @@
         this.onlyContent = false;
         this.$nextTick(() => {
           if (!this.scroll) {
-            this.scroll = new BScroll(this.$els.food, {
+            this.scroll = new BScroll(this.$refs.food, {
               click: true
             });
           } else {
@@ -107,8 +107,8 @@
         if (!event._constructed) {
           return;
         }
-        console.log('click this');
-        this.$dispatch('cart.add', event.target);
+        // $emit只能在当前的组件监听事件，不能向父组件冒泡
+        this.$emit('add', event.target);
         Vue.set(this.food, 'count', 1);
       },
       needShow(type, text) {
@@ -122,18 +122,15 @@
         } else {  // 其他情况，只能是当前类型与勾选的显示类型相同
           return type === this.selectType;
         }
-      }
-    },
-    events: {
-      // 监听子组件传过来的时间
-      'ratingtype.select'(type) {
+      },
+      selectRating(type) {
         this.selectType = type;
         // 改变selectType需要刷新scroll
         this.$nextTick(() => {
           this.scroll.refresh();
         });
       },
-      'content.toggle'(onlyContent) {
+      toggleContent(onlyContent) {
         this.onlyContent = onlyContent;
         // 改变onlyContent需要刷新scroll
         this.$nextTick(() => {

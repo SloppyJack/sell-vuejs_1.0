@@ -1,9 +1,9 @@
-<template xmlns:v-el="http://www.w3.org/1999/xhtml">
+<template>
   <div class="goods">
-    <div class="menu-wrapper" v-el:menu-wrapper>
+    <div class="menu-wrapper" ref="menuWrapper">
       <ul>
-        <li v-for="item in goods" class="menu-item" :class="{'current':currentIndex===$index}"
-        @click="selectMenu($index,$event)">
+        <li v-for="(item,index) in goods" class="menu-item" :class="{'current':currentIndex===index}"
+        @click="selectMenu(index,$event)">
           <span class="text border-1px">
             <span v-show="item.type>0" class="icon" :class="classMap[item.type]"></span>
             {{item.name}}
@@ -11,7 +11,7 @@
         </li>
       </ul>
     </div>
-    <div class="foods-wrapper" v-el:foods-wrapper>
+    <div class="foods-wrapper" ref="foodsWrapper">
       <ul>
         <li v-for="item in goods" class="food-list food-list-hook">
           <h1 class="title">{{item.name}}</h1>
@@ -31,7 +31,7 @@
                   class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
                 </div>
                 <div class="cartcontrol-warpper">
-                  <cartcontrol :food="food"></cartcontrol>
+                  <cartcontrol @add="addFood" :food="food"></cartcontrol>
                 </div>
               </div>
             </li>
@@ -39,8 +39,8 @@
         </li>
       </ul>
     </div>
-    <shopcart v-ref:shopcart :select-foods="selectFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
-    <food :food="selectedFood" v-ref:food></food>
+    <shopcart ref="shopcart" :select-foods="selectFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
+    <food @add="addFood" :food="selectedFood" ref="food"></food>
   </div>
 </template>
 
@@ -112,18 +112,21 @@
         if (!event._constructed) {
           return;
         }
-        let foodList = this.$els.foodsWrapper.getElementsByClassName('food-list-hook');
+        let foodList = this.$refs.foodsWrapper.getElementsByClassName('food-list-hook');
         // 对应的商品列表的高度
         let el = foodList[index];
         this.foodsScroll.scrollToElement(el, 300);
       },
+      addFood(target) {
+        this._drop(target);
+      },
       // 初始化滑动窗口
       _initScroll() {
-        this.menuScroll = new BScroll(this.$els.menuWrapper, {
+        this.menuScroll = new BScroll(this.$refs.menuWrapper, {
           click: true
         });
 
-        this.foodsScroll = new BScroll(this.$els.foodsWrapper, {
+        this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {
           click: true,  // 滚动框架不拦截点击事件
           probeType: 3  // probeType为3，将在屏幕滑动的过程中和momentum滚动动画运行过程中实时派发scroll事件
         });
@@ -135,7 +138,7 @@
       },
       _calculateHeight() {
         // 获取每一个分类的列表
-        let foodList = this.$els.foodsWrapper.getElementsByClassName('food-list-hook');
+        let foodList = this.$refs.foodsWrapper.getElementsByClassName('food-list-hook');
         let height = 0;
         this.listHeight.push(height);
         // 初始化商品分类列表的高度
@@ -164,13 +167,6 @@
       shopcart,
       cartcontrol,
       food
-    },
-    // 监听事件（包括子组件发射的事件）
-    events: {
-      // 监听子组组件cartcontrol的cart.add事件
-      'cart.add'(target) {
-        this._drop(target);
-      }
     }
   };
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <div class="ratings" v-el:ratings>
+  <div class="ratings" ref="ratings">
     <div class="ratings-content">
       <div class="overview">
         <div class="overview-left">
@@ -25,8 +25,8 @@
         </div>
       </div>
       <split></split>
-      <ratingselect :select-type="selectType"
-                    :only-content="onlyContent" :desc="desc" :ratings="ratings">
+      <ratingselect :select-type="selectType" :only-content="onlyContent" :ratings="ratings"
+      @select="selectRating" @toggle="toggleContent">
       </ratingselect>
       <div class="rating-wrapper">
         <ul>
@@ -87,7 +87,7 @@
         if (response.errno === ERR_OK) {
           this.ratings = response.data;
           this.$nextTick(() => {
-            this.scroll = new BScroll(this.$els.ratings, {
+            this.scroll = new BScroll(this.$refs.ratings, {
               click: true
             });
           });
@@ -106,19 +106,16 @@
         } else {  // 其他情况，只能是当前类型与勾选的显示类型相同
           return type === this.selectType;
         }
-      }
-    },
-    events: {
-      // 监听子组件传过来的时间
-      'ratingtype.select'(type) {
+      },
+      selectRating(type) {
         this.selectType = type;
         // 改变selectType需要刷新scroll
         this.$nextTick(() => {
           this.scroll.refresh();
         });
       },
-      'content.toggle'(onlyContent) {
-        this.onlyContent = onlyContent;
+      toggleContent(onlyContent) {
+        this.onlyContent = !onlyContent;
         // 改变onlyContent需要刷新scroll
         this.$nextTick(() => {
           this.scroll.refresh();
